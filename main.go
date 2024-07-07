@@ -9,11 +9,17 @@ import (
 )
 
 func main() {
-    godotenv.Load()
-    address := fmt.Sprintf("%s:%s", os.Getenv("DOMAIN"), os.Getenv("PORT"))
-    mux := http.NewServeMux()
+	godotenv.Load()
+	address := fmt.Sprintf("%s:%s", os.Getenv("DOMAIN"), os.Getenv("PORT"))
+	mux := http.NewServeMux()
+
+	router := Router{}
+
+	mux.HandleFunc("GET /v1/healthz", router.healthz)
+	mux.HandleFunc("GET /v1/err", router.err)
+
 	srv := http.Server{
-        Addr: address,
+		Addr:    address,
 		Handler: mux,
 	}
 
