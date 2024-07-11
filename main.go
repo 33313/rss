@@ -25,8 +25,11 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Routes
+    // General
 	mux.HandleFunc("GET /v1/healthz", api.healthz)
 	mux.HandleFunc("GET /v1/err", api.err)
+    // Users
+    mux.HandleFunc("GET /v1/users", api.UsersGet)
 	mux.HandleFunc("POST /v1/users", api.UsersPost)
 
 	fmt.Println("Running server on", address)
