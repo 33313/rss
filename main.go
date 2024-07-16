@@ -32,6 +32,7 @@ func main() {
     mux.HandleFunc("GET /v1/users", api.auth(api.UsersGet))
 	mux.HandleFunc("POST /v1/users", api.UsersPost)
     // Feeds
+    mux.HandleFunc("GET /v1/feeds", api.FeedsGet)
     mux.HandleFunc("POST /v1/feeds", api.auth(api.FeedsPost))
 
 	fmt.Println("Running server on", address)

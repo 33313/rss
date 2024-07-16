@@ -38,3 +38,13 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 
 	respondWithJSON(w, http.StatusCreated, deserializeFeed(feed))
 }
+
+func (api *API) FeedsGet(w http.ResponseWriter, r *http.Request) {
+    feeds, err := api.DB.GetFeeds(r.Context())
+    if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+    respondWithJSON(w, http.StatusOK, deserializeFeedArray(feeds))
+}

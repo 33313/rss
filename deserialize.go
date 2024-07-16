@@ -44,3 +44,11 @@ func deserializeFeed(feed database.Feed) Feed {
 		UserID:    feed.UserID,
 	}
 }
+
+func deserializeFeedArray(feeds []database.Feed) []Feed {
+	arr := make([]Feed, len(feeds))
+	for i, feed := range feeds {
+		arr[i] = deserializeFeed(feed)
+	}
+	return arr
+}
