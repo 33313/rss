@@ -34,6 +34,8 @@ func main() {
     // Feeds
     mux.HandleFunc("GET /v1/feeds", api.FeedsGet)
     mux.HandleFunc("POST /v1/feeds", api.auth(api.FeedsPost))
+    // Follows
+    mux.HandleFunc("POST /v1/feed_follows", api.auth(api.FollowsPost))
 
 	fmt.Println("Running server on", address)
 	srv := http.Server{
