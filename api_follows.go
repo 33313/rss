@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/myshkovsky/rss/internal/database"
@@ -10,7 +11,7 @@ import (
 
 func (api *API) FollowsPost(w http.ResponseWriter, r *http.Request, user database.User) {
 	type Params struct {
-		FeedId  uuid.UUID `json:"feed_id"`
+		FeedId uuid.UUID `json:"feed_id"`
 	}
 	params := Params{}
 	err := decodeParams[Params](w, r, &params)
@@ -20,9 +21,11 @@ func (api *API) FollowsPost(w http.ResponseWriter, r *http.Request, user databas
 	}
 
 	follow, err := api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
-		ID:     uuid.New(),
-		FeedID: params.FeedId,
-		UserID: user.ID,
+		ID:        uuid.New(),
+		FeedID:    params.FeedId,
+		UserID:    user.ID,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 	})
 
 	if err != nil {
@@ -32,4 +35,11 @@ func (api *API) FollowsPost(w http.ResponseWriter, r *http.Request, user databas
 	}
 
 	respondWithJSON(w, http.StatusCreated, deserializeFollow(follow))
+}
+
+func (api *API) FollowsDelete(w http.ResponseWriter, r *http.Request) {
+	feedIdStr := r.PathValue("feedFollowID")
+    feedId := uuid.Must(uuid.FromBytes([]byte(feedIdStr)))
+    api.DB.DeleteFollow(r.Context(), feedId)
+    w.WriteHeader(http.StatusNoContent)
 }

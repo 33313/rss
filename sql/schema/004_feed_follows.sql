@@ -7,9 +7,9 @@ create table feed_follows (
     user_id uuid not null references users(id)
         on update cascade
         on delete cascade,
-    unique(feed_id, user_id),
     created_at timestamp not null,
-    updated_at timestamp not null
+    updated_at timestamp not null,
+    unique(feed_id, user_id)
 );
 
 -- +goose Down

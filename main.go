@@ -36,6 +36,7 @@ func main() {
     mux.HandleFunc("POST /v1/feeds", api.auth(api.FeedsPost))
     // Follows
     mux.HandleFunc("POST /v1/feed_follows", api.auth(api.FollowsPost))
+    mux.HandleFunc("DELETE /v1/feed_follows/{feedFollowID}", api.FollowsDelete)
 
 	fmt.Println("Running server on", address)
 	srv := http.Server{
