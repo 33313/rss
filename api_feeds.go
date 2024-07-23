@@ -36,6 +36,20 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 		return
 	}
 
+    _, err = api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
+    	ID:        uuid.New(),
+    	FeedID:    feed.ID,
+    	UserID:    feed.UserID,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+    })
+
+	if err != nil {
+		log.Printf("Error creating follow: %s", err)
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	respondWithJSON(w, http.StatusCreated, deserializeFeed(feed))
 }
 

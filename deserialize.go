@@ -70,3 +70,11 @@ func deserializeFollow(follow database.FeedFollow) Follow {
     	UpdatedAt: follow.UpdatedAt,
     }
 }
+
+func deserializeFollowArray(follows []database.FeedFollow) []Follow {
+	arr := make([]Follow, len(follows))
+	for i, follow := range follows {
+		arr[i] = deserializeFollow(follow)
+	}
+	return arr
+}

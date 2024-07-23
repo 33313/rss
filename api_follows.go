@@ -43,3 +43,13 @@ func (api *API) FollowsDelete(w http.ResponseWriter, r *http.Request) {
     api.DB.DeleteFollow(r.Context(), feedId)
     w.WriteHeader(http.StatusNoContent)
 }
+
+func (api *API) FollowsGetFromUser(w http.ResponseWriter, r *http.Request, user database.User) {
+    follows, err := api.DB.GetUserFollows(r.Context(), user.ID)
+    if err != nil {
+        log.Printf("Error getting user follows: %s", err)
+        respondWithError(w, http.StatusInternalServerError, err.Error())
+        return
+    }
+    respondWithJSON(w, http.StatusOK, deserializeFollowArray(follows))
+}
