@@ -39,17 +39,20 @@ func (api *API) FollowsPost(w http.ResponseWriter, r *http.Request, user databas
 
 func (api *API) FollowsDelete(w http.ResponseWriter, r *http.Request) {
 	feedIdStr := r.PathValue("feedFollowID")
-    feedId := uuid.Must(uuid.FromBytes([]byte(feedIdStr)))
+	feedId := uuid.MustParse(feedIdStr)
     api.DB.DeleteFollow(r.Context(), feedId)
-    w.WriteHeader(http.StatusNoContent)
+	type RES struct {
+		Status string `json:"status"`
+	}
+	respondWithJSON(w, http.StatusOK, RES{Status: "OK"})
 }
 
 func (api *API) FollowsGetFromUser(w http.ResponseWriter, r *http.Request, user database.User) {
-    follows, err := api.DB.GetUserFollows(r.Context(), user.ID)
-    if err != nil {
-        log.Printf("Error getting user follows: %s", err)
-        respondWithError(w, http.StatusInternalServerError, err.Error())
-        return
-    }
-    respondWithJSON(w, http.StatusOK, deserializeFollowArray(follows))
+	follows, err := api.DB.GetUserFollows(r.Context(), user.ID)
+	if err != nil {
+		log.Printf("Error getting user follows: %s", err)
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, deserializeFollowArray(follows))
 }

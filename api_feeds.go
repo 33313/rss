@@ -36,7 +36,7 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 		return
 	}
 
-    _, err = api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
+    follow, err := api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
     	ID:        uuid.New(),
     	FeedID:    feed.ID,
     	UserID:    feed.UserID,
@@ -50,7 +50,7 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, deserializeFeed(feed))
+	respondWithJSON(w, http.StatusCreated, joinFeedFollow(feed, follow))
 }
 
 func (api *API) FeedsGet(w http.ResponseWriter, r *http.Request) {
