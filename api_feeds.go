@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"time"
@@ -22,12 +23,13 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 	}
 
 	feed, err := api.DB.CreateFeed(r.Context(), database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
-		Name:      params.Name,
-		Url:       params.Url,
-		UserID:    user.ID,
+		ID:            uuid.New(),
+		Name:          params.Name,
+		Url:           params.Url,
+		UserID:        user.ID,
+		CreatedAt:     time.Now().UTC(),
+		UpdatedAt:     time.Now().UTC(),
+		LastFetchedAt: sql.NullTime{},
 	})
 
 	if err != nil {
@@ -36,13 +38,13 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 		return
 	}
 
-    follow, err := api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
-    	ID:        uuid.New(),
-    	FeedID:    feed.ID,
-    	UserID:    feed.UserID,
+	follow, err := api.DB.CreateFollow(r.Context(), database.CreateFollowParams{
+		ID:        uuid.New(),
+		FeedID:    feed.ID,
+		UserID:    feed.UserID,
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
-    })
+	})
 
 	if err != nil {
 		log.Printf("Error creating follow: %s", err)
@@ -54,11 +56,11 @@ func (api *API) FeedsPost(w http.ResponseWriter, r *http.Request, user database.
 }
 
 func (api *API) FeedsGet(w http.ResponseWriter, r *http.Request) {
-    feeds, err := api.DB.GetFeeds(r.Context())
-    if err != nil {
+	feeds, err := api.DB.GetFeeds(r.Context())
+	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-    respondWithJSON(w, http.StatusOK, deserializeFeedArray(feeds))
+	respondWithJSON(w, http.StatusOK, deserializeFeedArray(feeds))
 }

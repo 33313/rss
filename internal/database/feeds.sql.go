@@ -7,49 +7,53 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 const createFeed = `-- name: CreateFeed :one
-insert into feeds (id, created_at, updated_at, name, url, user_id)
-values ($1, $2, $3, $4, $5, $6)
-returning id, created_at, updated_at, name, url, user_id
+insert into feeds (id, name, url, user_id, created_at, updated_at, last_fetched_at)
+values ($1, $2, $3, $4, $5, $6, $7)
+returning id, name, url, user_id, created_at, updated_at, last_fetched_at
 `
 
 type CreateFeedParams struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Name      string
-	Url       string
-	UserID    uuid.UUID
+	ID            uuid.UUID
+	Name          string
+	Url           string
+	UserID        uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	LastFetchedAt sql.NullTime
 }
 
 func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, error) {
 	row := q.db.QueryRowContext(ctx, createFeed,
 		arg.ID,
-		arg.CreatedAt,
-		arg.UpdatedAt,
 		arg.Name,
 		arg.Url,
 		arg.UserID,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+		arg.LastFetchedAt,
 	)
 	var i Feed
 	err := row.Scan(
 		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
 		&i.Name,
 		&i.Url,
 		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.LastFetchedAt,
 	)
 	return i, err
 }
 
 const getFeeds = `-- name: GetFeeds :many
-select id, created_at, updated_at, name, url, user_id from feeds
+select id, name, url, user_id, created_at, updated_at, last_fetched_at from feeds
 `
 
 func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
@@ -63,11 +67,12 @@ func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
 		var i Feed
 		if err := rows.Scan(
 			&i.ID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 			&i.Name,
 			&i.Url,
 			&i.UserID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.LastFetchedAt,
 		); err != nil {
 			return nil, err
 		}
