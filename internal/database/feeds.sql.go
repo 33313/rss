@@ -125,7 +125,9 @@ func (q *Queries) GetNextFeedsToFetch(ctx context.Context, limit int32) ([]Feed,
 }
 
 const markFeedFetched = `-- name: MarkFeedFetched :exec
-update feeds set last_fetched_at = NOW(), updated_at = NOW()
+update feeds set
+last_fetched_at = timezone('utc', now()),
+updated_at = timezone('utc', now())
 where id = $1
 `
 

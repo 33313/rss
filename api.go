@@ -8,6 +8,7 @@ import (
 
 type API struct {
 	DB *database.Queries
+    FetchLimit int32
 }
 
 func (api *API) healthz(w http.ResponseWriter, r *http.Request) {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq" // Postgres driver
@@ -19,25 +20,29 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	queries := database.New(db)
 	api := API{
-		DB: database.New(db),
+		DB:         queries,
+		FetchLimit: 10,
 	}
 	mux := http.NewServeMux()
 
 	// Routes
-    // General
+	// General
 	mux.HandleFunc("GET /v1/healthz", api.healthz)
 	mux.HandleFunc("GET /v1/err", api.err)
-    // Users
-    mux.HandleFunc("GET /v1/users", api.auth(api.UsersGet))
+	// Users
+	mux.HandleFunc("GET /v1/users", api.auth(api.UsersGet))
 	mux.HandleFunc("POST /v1/users", api.UsersPost)
-    // Feeds
-    mux.HandleFunc("GET /v1/feeds", api.FeedsGet)
-    mux.HandleFunc("POST /v1/feeds", api.auth(api.FeedsPost))
-    // Follows
-    mux.HandleFunc("POST /v1/feed_follows", api.auth(api.FollowsPost))
-    mux.HandleFunc("DELETE /v1/feed_follows/{feedFollowID}", api.FollowsDelete)
-    mux.HandleFunc("GET /v1/feed_follows", api.auth(api.FollowsGetFromUser))
+	// Feeds
+	mux.HandleFunc("GET /v1/feeds", api.FeedsGet)
+	mux.HandleFunc("POST /v1/feeds", api.auth(api.FeedsPost))
+	// Follows
+	mux.HandleFunc("POST /v1/feed_follows", api.auth(api.FollowsPost))
+	mux.HandleFunc("DELETE /v1/feed_follows/{feedFollowID}", api.FollowsDelete)
+	mux.HandleFunc("GET /v1/feed_follows", api.auth(api.FollowsGetFromUser))
+
+	go StartScraper(queries, 10, time.Minute)
 
 	fmt.Println("Running server on", address)
 	srv := http.Server{

@@ -12,5 +12,7 @@ order by last_fetched_at asc nulls first
 limit $1;
 
 -- name: MarkFeedFetched :exec
-update feeds set last_fetched_at = NOW(), updated_at = NOW()
+update feeds set
+last_fetched_at = timezone('utc', now()),
+updated_at = timezone('utc', now())
 where id = $1;
