@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/myshkovsky/rss/internal/database"
 )
 
@@ -45,6 +47,31 @@ func scrape(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		panic(err)
 	}
 	for _, v := range data.Channel.Items {
-		log.Printf("FEED: %s; ITEM: %s", data.Channel.Title, v.Title)
+		pubDate := sql.NullTime{}
+		if t, err := time.Parse(time.RFC1123Z, v.PubDate); err == nil {
+			pubDate = sql.NullTime{
+				Time:  t,
+				Valid: true,
+			}
+		}
+
+		err = db.CreatePost(context.Background(), database.CreatePostParams{
+			ID:        uuid.New(),
+			CreatedAt: time.Now().UTC(),
+			UpdatedAt: time.Now().UTC(),
+			Title:     v.Title,
+			Url:       v.Link,
+			Description: sql.NullString{
+				String: v.Description,
+				Valid:  true,
+			},
+			PublishedAt: pubDate,
+			FeedID:      feed.ID,
+		})
+
+		if err != nil {
+			log.Printf("Couldn't create post: %v", err)
+			continue
+		}
 	}
 }

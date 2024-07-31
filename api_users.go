@@ -13,11 +13,11 @@ func (api *API) UsersPost(w http.ResponseWriter, r *http.Request) {
 		Name string `json:"name"`
 	}
 	params := Params{}
-    err := decodeParams[Params](w, r, &params)
-    if err != nil {
-        respondWithError(w, http.StatusInternalServerError, err.Error())
-        return
-    }
+	err := decodeParams[Params](w, r, &params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	user, err := api.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:        uuid.New(),
@@ -34,5 +34,5 @@ func (api *API) UsersPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) UsersGet(w http.ResponseWriter, r *http.Request, user database.User) {
-    respondWithJSON(w, http.StatusOK, deserializeUser(user))
+	respondWithJSON(w, http.StatusOK, deserializeUser(user))
 }

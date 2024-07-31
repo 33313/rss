@@ -30,10 +30,10 @@ func fetchRSS(url string) (*RSSFeed, error) {
 		Timeout: 10 * time.Second,
 	}
 	res, err := client.Get(url)
-    if err != nil {
-        return nil, err
-    }
-    defer res.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
 
 	data, err := io.ReadAll(res.Body)
 	if err != nil {

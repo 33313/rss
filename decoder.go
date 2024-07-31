@@ -11,7 +11,7 @@ func decodeParams[T any](w http.ResponseWriter, r *http.Request, data *T) error 
 	err := decoder.Decode(&data)
 	if err != nil {
 		log.Printf("Error decoding parameters: %s", err)
-        return err
+		return err
 	}
-    return nil
+	return nil
 }

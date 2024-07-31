@@ -40,7 +40,7 @@ func (api *API) FollowsPost(w http.ResponseWriter, r *http.Request, user databas
 func (api *API) FollowsDelete(w http.ResponseWriter, r *http.Request) {
 	feedIdStr := r.PathValue("feedFollowID")
 	feedId := uuid.MustParse(feedIdStr)
-    api.DB.DeleteFollow(r.Context(), feedId)
+	api.DB.DeleteFollow(r.Context(), feedId)
 	type RES struct {
 		Status string `json:"status"`
 	}

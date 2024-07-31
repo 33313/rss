@@ -8,8 +8,8 @@ type FeedFollowJoined struct {
 }
 
 func joinFeedFollow(feed database.Feed, follow database.FeedFollow) FeedFollowJoined {
-    return FeedFollowJoined{
-        FeedObject: deserializeFeed(feed),
-        FollowObject: deserializeFollow(follow),
-    }
+	return FeedFollowJoined{
+		FeedObject:   deserializeFeed(feed),
+		FollowObject: deserializeFollow(follow),
+	}
 }
