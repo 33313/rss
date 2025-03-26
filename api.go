@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/myshkovsky/rss/internal/database"
+	"github.com/33313/rss/internal/database"
 )
 
 type API struct {

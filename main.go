@@ -9,7 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq" // Postgres driver
-	"github.com/myshkovsky/rss/internal/database"
+	"github.com/33313/rss/internal/database"
 )
 
 func main() {

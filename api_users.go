@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/myshkovsky/rss/internal/database"
+	"github.com/33313/rss/internal/database"
 )
 
 func (api *API) UsersPost(w http.ResponseWriter, r *http.Request) {

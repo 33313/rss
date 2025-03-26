@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/myshkovsky/rss/internal/database"
+	"github.com/33313/rss/internal/database"
 )
 
 func StartScraper(db *database.Queries, numFeeds int, interval time.Duration) {

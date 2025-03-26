@@ -1,4 +1,4 @@
-module github.com/myshkovsky/rss
+module github.com/33313/rss
 
 go 1.22.2
 

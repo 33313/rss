@@ -1,6 +1,6 @@
 package main
 
-import "github.com/myshkovsky/rss/internal/database"
+import "github.com/33313/rss/internal/database"
 
 type FeedFollowJoined struct {
 	FeedObject   Feed   `json:"feed"`

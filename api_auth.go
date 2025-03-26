@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/myshkovsky/rss/internal/auth"
-	"github.com/myshkovsky/rss/internal/database"
+	"github.com/33313/rss/internal/auth"
+	"github.com/33313/rss/internal/database"
 )
 
 type AuthHandler func(http.ResponseWriter, *http.Request, database.User)
